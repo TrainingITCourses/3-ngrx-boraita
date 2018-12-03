@@ -1,8 +1,15 @@
-<h1>Angular Speed: aplicaciones de alto rendimiento</h1>
-
-<router-outlet></router-outlet>
-
-<footer>
-  <a href="https://trainingit.es/">Training IT</a>
-  <small>A course By <a href="https://twitter.com/albertobasalo">Alberto Basalo</a></small>
-</footer>
+<div style="width: 20%; float: left; background-color: lightgray">
+  Searching critery:
+  <select [(ngModel)]="criterySelected" (change)="criteryChanged()">
+    <option *ngFor="let critery of criteries" [ngValue]="critery">{{
+      critery.name
+    }}</option>
+  </select>
+  <app-filter-list
+    [filterList]="criteryList$ | async"
+    (fieldSelected)="filterLaunches($event)"
+  ></app-filter-list>
+</div>
+<div style="max-width: 78%; float: right; background-color: rgb(241, 241, 241)">
+  <app-launches-list [launchesList]="launchesList$ | async"></app-launches-list>
+</div>

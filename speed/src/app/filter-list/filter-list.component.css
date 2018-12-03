@@ -1,0 +1,9 @@
+:hover.active {
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+li {
+  list-style-type: none;
+  margin-bottom: 5px;
+}

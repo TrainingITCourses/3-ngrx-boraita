@@ -1,0 +1,9 @@
+<ul>
+  <li
+    *ngFor="let field of filterList"
+    class="active"
+    (click)="onSelectedField(field)"
+  >
+    <div>{{ field.name }}</div>
+  </li>
+</ul>
