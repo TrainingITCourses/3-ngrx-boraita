@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { GlobalStore } from '../store/global/global-store.state';
 import {
-  LoadLaunches,
   LoadStatuses,
   LoadAgencies,
   LoadTypes
 } from '../store/global/global-store.actions';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/reducers/launches.reducer';
+import { of } from 'rxjs/internal/observable/of';
 
 @Injectable()
 export class ApiService {
-  constructor(private http: HttpClient, private global: GlobalStore) {}
-  key = 'launches';
+  constructor(
+    private http: HttpClient,
+    private global: GlobalStore,
+    private store: Store<State>
+  ) {}
   getAgencies() {
     return this.http
       .get('../assets/data/agencies.json')
@@ -34,20 +39,18 @@ export class ApiService {
         this.global.dispatch(new LoadTypes(types));
       });
   }
-  getAllLaunches() {
-    const localLaunches = localStorage.getItem(this.key);
+  getAllLaunches = key => {
+    debugger;
+    const localLaunches = localStorage.getItem(key);
     if (localLaunches) {
-      this.global.dispatch(new LoadLaunches(JSON.parse(localLaunches)));
+      return of(JSON.parse(localLaunches));
     } else {
-      this.http
-        .get('../assets/data/launches.json')
-        .pipe(map(data => data[this.key]))
-        .subscribe(
-          launches => (
-            localStorage.setItem(this.key, JSON.stringify(launches)),
-            this.global.dispatch(new LoadLaunches(launches))
-          )
-        );
+      return this.http.get('../assets/data/launches.json').pipe(
+        map(data => data[key]),
+        tap(launches => {
+          localStorage.setItem(key, JSON.stringify(launches));
+        })
+      );
     }
-  }
+  };
 }

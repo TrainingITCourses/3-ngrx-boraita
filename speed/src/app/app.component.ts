@@ -8,6 +8,10 @@ import {
   GlobalStore,
   GlobalSlideTypes
 } from './core/store/global/global-store.state';
+import { Store } from '@ngrx/store';
+import { State } from './reducers';
+import { LauncherEffects } from './reducers/launcher.effects';
+import { LaunchesActionTypes, LoadLaunches } from './reducers/launches.actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,11 +24,13 @@ export class AppComponent implements OnInit {
   criteries;
   criteryList$;
   criterySelected;
-  launchesList$: Observable<any>;
+  launchesList$;
   constructor(
     private filterService: FilterService,
     private apiService: ApiService,
-    private global: GlobalStore
+    private global: GlobalStore,
+    private store: Store<State>,
+    private launcherEffect: LauncherEffects
   ) {}
   ngOnInit() {
     this.criteries = [
@@ -34,20 +40,15 @@ export class AppComponent implements OnInit {
     ];
 
     this.loadData();
+    this.observeLaunches();
     this.criteryChanged();
-    this.setLaunches();
   }
   loadData() {
     this.criterySelected = this.criteries[0];
-    this.apiService.getAllLaunches();
+    this.store.dispatch(new LoadLaunches());
     this.apiService.getStatues();
     this.apiService.getAgencies();
     this.apiService.getTypes();
-  }
-  setLaunches() {
-    this.launchesList$ = this.global
-      .select$(GlobalSlideTypes.launches)
-      .pipe(map(launches => launches));
   }
   criteryChanged() {
     switch (this.criterySelected.value) {
@@ -69,7 +70,8 @@ export class AppComponent implements OnInit {
     }
   }
   filterLaunches(filterSelected) {
-    this.apiService.getAllLaunches();
+    debugger;
+
     switch (this.criterySelected.value) {
       case 'agencies':
         this.filterService.getFilterAgencies(filterSelected.type);
@@ -81,5 +83,26 @@ export class AppComponent implements OnInit {
         this.filterService.getFilterLaunchers(filterSelected.id);
         break;
     }
+  }
+  observeLaunches() {
+    this.launchesList$ = this.store
+      .select('launch')
+      .pipe(
+        // tap(() => (this.loaded = true)),
+        // map(st => {
+        //   debugger;
+        //   return st.launches;
+        // }),
+        map(launches => {
+          debugger;
+          if (!launches) {
+            return [];
+          }
+          return launches
+            .filter(l => new Date(l.windowstart) > new Date())
+            .sort((a, b) => (a.isostart > b.isostart ? 1 : -1))
+            .slice(0, 1)[0];
+        })
+      );
   }
 }

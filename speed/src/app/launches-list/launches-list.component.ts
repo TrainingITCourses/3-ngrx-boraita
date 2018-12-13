@@ -9,5 +9,4 @@ import { LaunchLight } from '../store/models/launch-light';
 })
 export class LaunchesListComponent {
   @Input() launchesList: Array<LaunchLight> = [];
-
 }
