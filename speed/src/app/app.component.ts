@@ -9,9 +9,9 @@ import {
   GlobalSlideTypes
 } from './core/store/global/global-store.state';
 import { Store } from '@ngrx/store';
-import { State } from './reducers';
-import { LauncherEffects } from './reducers/launcher.effects';
-import { LaunchesActionTypes, LoadLaunches } from './reducers/launches.actions';
+import { State } from './core/store/reducers';
+import { LauncherEffects } from './core/store/reducers/launchers/launcher.effects';
+import { LoadLaunches } from './core/store/reducers/launchers/launches.actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,39 +70,27 @@ export class AppComponent implements OnInit {
     }
   }
   filterLaunches(filterSelected) {
-    debugger;
-
     switch (this.criterySelected.value) {
       case 'agencies':
-        this.filterService.getFilterAgencies(filterSelected.type);
+        this.launchesList$ = this.filterService.getFilterAgencies(
+          filterSelected.type
+        );
         break;
       case 'state':
-        this.filterService.getFilterMissions(filterSelected.id);
+        this.launchesList$ = this.filterService.getFilterMissions(
+          filterSelected.id
+        );
         break;
       case 'type':
-        this.filterService.getFilterLaunchers(filterSelected.id);
+        this.launchesList$ = this.filterService.getFilterLaunchers(
+          filterSelected.id
+        );
         break;
     }
   }
   observeLaunches() {
     this.launchesList$ = this.store
-      .select('launch')
-      .pipe(
-        // tap(() => (this.loaded = true)),
-        // map(st => {
-        //   debugger;
-        //   return st.launches;
-        // }),
-        map(launches => {
-          debugger;
-          if (!launches) {
-            return [];
-          }
-          return launches
-            .filter(l => new Date(l.windowstart) > new Date())
-            .sort((a, b) => (a.isostart > b.isostart ? 1 : -1))
-            .slice(0, 1)[0];
-        })
-      );
+      .select('launches')
+      .pipe(map(st => st.launches));
   }
 }

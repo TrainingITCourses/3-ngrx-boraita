@@ -8,17 +8,11 @@ import {
   LoadAgencies,
   LoadTypes
 } from '../store/global/global-store.actions';
-import { Store } from '@ngrx/store';
-import { State } from 'src/app/reducers/launches.reducer';
 import { of } from 'rxjs/internal/observable/of';
 
 @Injectable()
 export class ApiService {
-  constructor(
-    private http: HttpClient,
-    private global: GlobalStore,
-    private store: Store<State>
-  ) {}
+  constructor(private http: HttpClient, private global: GlobalStore) {}
   getAgencies() {
     return this.http
       .get('../assets/data/agencies.json')
@@ -40,7 +34,6 @@ export class ApiService {
       });
   }
   getAllLaunches = key => {
-    debugger;
     const localLaunches = localStorage.getItem(key);
     if (localLaunches) {
       return of(JSON.parse(localLaunches));

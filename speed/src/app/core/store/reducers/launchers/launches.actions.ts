@@ -1,7 +1,7 @@
 import { Action } from '@ngrx/store';
 
 export enum LaunchesActionTypes {
-  LoadLaunches = '[Launches] Load Launchess',
+  LoadLaunches = '[Launches] Load Launches',
   LoadLaunched = '[Launches] Load Launched'
 }
 

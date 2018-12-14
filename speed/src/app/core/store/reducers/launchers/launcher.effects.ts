@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
+import { map, mergeMap } from 'rxjs/operators';
+
 import {
   LaunchesActionTypes,
   LoadLaunches,
   LoadLaunched
 } from './launches.actions';
-import { mergeMap, map } from 'rxjs/operators';
-import { ApiService } from '../core/services/api.service';
-import { HttpClient } from '@angular/common/http';
+import { ApiService } from 'src/app/core/services/api.service';
 
 @Injectable()
 export class LauncherEffects {
