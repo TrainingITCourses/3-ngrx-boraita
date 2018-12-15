@@ -2,20 +2,13 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Launch } from '../../store/models/launch';
-import {
-  GlobalStore,
-  GlobalSlideTypes
-} from '../store/global/global-store.state';
 import { map } from 'rxjs/operators';
-import { State } from '../store/reducers/launchers/launches.reducer';
-import { LauncherEffects } from '../store/reducers/launchers/launcher.effects';
+import { LauncherState } from '../store/reducers/launchers/launches.reducer';
 
 @Injectable()
 export class FilterService {
   constructor(
-    private global: GlobalStore,
-    private store: Store<State>,
-    private launchesEffect: LauncherEffects
+    private store: Store<LauncherState>,
   ) {}
   getFilterAgencies(type) {
     return this.store.select('launches').pipe(

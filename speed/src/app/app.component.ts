@@ -1,17 +1,15 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 
 import { FilterService } from './core/services/filter.service';
 import { ApiService } from './core/services/api.service';
-import {
-  GlobalStore,
-  GlobalSlideTypes
-} from './core/store/global/global-store.state';
 import { Store } from '@ngrx/store';
 import { State } from './core/store/reducers';
 import { LauncherEffects } from './core/store/reducers/launchers/launcher.effects';
 import { LoadLaunches } from './core/store/reducers/launchers/launches.actions';
+import { LoadAgencies } from './core/store/reducers/Agencies/agencies.actions';
+import { LoadStates } from './core/store/reducers/states/states.actions';
+import { LoadTypes } from './core/store/reducers/types/types.actions';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,10 +25,7 @@ export class AppComponent implements OnInit {
   launchesList$;
   constructor(
     private filterService: FilterService,
-    private apiService: ApiService,
-    private global: GlobalStore,
     private store: Store<State>,
-    private launcherEffect: LauncherEffects
   ) {}
   ngOnInit() {
     this.criteries = [
@@ -46,26 +41,29 @@ export class AppComponent implements OnInit {
   loadData() {
     this.criterySelected = this.criteries[0];
     this.store.dispatch(new LoadLaunches());
-    this.apiService.getStatues();
-    this.apiService.getAgencies();
-    this.apiService.getTypes();
+    this.store.dispatch(new LoadAgencies());
+    this.store.dispatch(new LoadStates());
+    this.store.dispatch(new LoadTypes());
   }
   criteryChanged() {
     switch (this.criterySelected.value) {
       case 'agencies':
-        this.criteryList$ = this.global
-          .select$(GlobalSlideTypes.agencies)
-          .pipe(map(agencies => agencies));
+        this.criteryList$ = this.store.select('agencies').pipe(
+          map(st => st.agencies),
+          map(agencies => agencies)
+        );
         break;
       case 'state':
-        this.criteryList$ = this.global
-          .select$(GlobalSlideTypes.statuses)
-          .pipe(map(statues => statues));
+        this.criteryList$ = this.store.select('states').pipe(
+          map(st => st.states),
+          map(states => states)
+        );
         break;
       case 'type':
-        this.criteryList$ = this.global
-          .select$(GlobalSlideTypes.types)
-          .pipe(map(types => types));
+        this.criteryList$ = this.store.select('types').pipe(
+          map(st => st.types),
+          map(types => types)
+        );
         break;
     }
   }

@@ -14,8 +14,11 @@ import { LaunchesListComponent } from './launches-list/launches-list.component';
 import { FilterService } from './core/services/filter.service';
 import { ApiService } from './core/services/api.service';
 import { environment } from 'src/environments/environment.prod';
-import { LauncherEffects } from './core/store/reducers/launchers/launcher.effects';
 import { reducers, metaReducers } from './core/store/reducers';
+import { LauncherEffects } from './core/store/reducers/launchers/launcher.effects';
+import { AgenciesEffects } from './core/store/reducers/Agencies/agencies.effects';
+import { StatesEffects } from './core/store/reducers/states/states.effects';
+import { TypesEffects } from './core/store/reducers/types/types.effects';
 
 @NgModule({
   declarations: [AppComponent, FilterListComponent, LaunchesListComponent],
@@ -26,7 +29,7 @@ import { reducers, metaReducers } from './core/store/reducers';
     HttpClientModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
-    EffectsModule.forRoot([LauncherEffects]),
+    EffectsModule.forRoot([LauncherEffects, AgenciesEffects, StatesEffects, TypesEffects]),
     environment.production ? StoreDevtoolsModule.instrument() : []
   ],
   providers: [ApiService, FilterService],
