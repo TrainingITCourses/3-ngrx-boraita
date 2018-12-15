@@ -1,0 +1,53 @@
+{
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": ["/favicon.ico", "/index.html", "/*.css", "/*.js"]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": ["/assets/**"],
+        "urls": [
+          "http://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic",
+          "http://cdn.rawgit.com/necolas/normalize.css/master/normalize.css",
+          "http://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css",
+          "http://fonts.gstatic.com/s/roboto/v18/KFOlCnqEu92Fr1MmSU5fBBc4.woff2"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "cache-first",
+      "urls": [
+        "http://127.0.0.1:8080/assets/launcstatus.json",
+        "http://127.0.0.1:8080/assets/missiontypes.json"
+      ],
+      "cacheConfig": {
+        "strategy": "performance",
+        "maxSize": 10,
+        "maxAge": "1d"
+      }
+    },
+    {
+      "name": "api-first",
+      "urls": [
+        "http://127.0.0.1:8080/assets/agencies.json",
+        "http://127.0.0.1:8080/assets/launches.json"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "5s"
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import { LoadLaunches } from './core/store/reducers/launchers/launches.actions';
 import { LoadAgencies } from './core/store/reducers/Agencies/agencies.actions';
 import { LoadStates } from './core/store/reducers/states/states.actions';
 import { LoadTypes } from './core/store/reducers/types/types.actions';
+import { SwUpdate, UpdateAvailableEvent } from '@angular/service-worker';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,9 +24,11 @@ export class AppComponent implements OnInit {
   criteryList$;
   criterySelected;
   launchesList$;
+  version = 2;
   constructor(
     private filterService: FilterService,
     private store: Store<State>,
+    private swUpdate: SwUpdate
   ) {}
   ngOnInit() {
     this.criteries = [
@@ -37,6 +40,7 @@ export class AppComponent implements OnInit {
     this.loadData();
     this.observeLaunches();
     this.criteryChanged();
+    this.observeVersions();
   }
   loadData() {
     this.criterySelected = this.criteries[0];
@@ -91,4 +95,25 @@ export class AppComponent implements OnInit {
       .select('launches')
       .pipe(map(st => st.launches));
   }
+  private observeVersions() {
+    if (this.swUpdate.isEnabled) {
+      this.swUpdate.available.subscribe((event: UpdateAvailableEvent) => {
+        debugger;
+        window.location.reload();
+      });
+    }
+  }
+  // private observeLoading() {
+  //   this.store.select('launch').subscribe(st => {
+  //     if (st.loading) {
+  //     } else {
+  //       if (this.loadingDialog) {
+  //         setTimeout(() => {
+  //           this.dialogs.closeLoading(this.loadingDialog);
+  //           this.loadingDialog = null;
+  //         }, 100);
+  //       }
+  //     }
+  //   });
+  // }
 }

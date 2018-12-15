@@ -19,6 +19,7 @@ import { LauncherEffects } from './core/store/reducers/launchers/launcher.effect
 import { AgenciesEffects } from './core/store/reducers/Agencies/agencies.effects';
 import { StatesEffects } from './core/store/reducers/states/states.effects';
 import { TypesEffects } from './core/store/reducers/types/types.effects';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [AppComponent, FilterListComponent, LaunchesListComponent],
@@ -29,8 +30,16 @@ import { TypesEffects } from './core/store/reducers/types/types.effects';
     HttpClientModule,
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
-    EffectsModule.forRoot([LauncherEffects, AgenciesEffects, StatesEffects, TypesEffects]),
-    environment.production ? StoreDevtoolsModule.instrument() : []
+    EffectsModule.forRoot([
+      LauncherEffects,
+      AgenciesEffects,
+      StatesEffects,
+      TypesEffects
+    ]),
+    environment.production ? StoreDevtoolsModule.instrument() : [],
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production
+    })
   ],
   providers: [ApiService, FilterService],
   bootstrap: [AppComponent]
