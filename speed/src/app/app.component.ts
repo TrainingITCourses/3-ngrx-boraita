@@ -98,22 +98,8 @@ export class AppComponent implements OnInit {
   private observeVersions() {
     if (this.swUpdate.isEnabled) {
       this.swUpdate.available.subscribe((event: UpdateAvailableEvent) => {
-        debugger;
         window.location.reload();
       });
     }
   }
-  // private observeLoading() {
-  //   this.store.select('launch').subscribe(st => {
-  //     if (st.loading) {
-  //     } else {
-  //       if (this.loadingDialog) {
-  //         setTimeout(() => {
-  //           this.dialogs.closeLoading(this.loadingDialog);
-  //           this.loadingDialog = null;
-  //         }, 100);
-  //       }
-  //     }
-  //   });
-  // }
 }
